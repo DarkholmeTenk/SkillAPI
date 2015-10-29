@@ -3,6 +3,12 @@ package skillapi.api.internal;
 import net.minecraft.entity.EntityLivingBase;
 import skillapi.api.implement.ISkill;
 
+/**
+ * Get an instance of this by calling {@link skillapi.api.internal.ISkillAPI#getSkillHandler(EntityLivingBase ent) getSkillHandler}
+ * on the instance of {@link skillapi.api.internal.ISkillAPI ISkillAPI} you obtained via IMC
+ * @author dark
+ *
+ */
 public interface IEntitySkillHandler
 {
 	/**
