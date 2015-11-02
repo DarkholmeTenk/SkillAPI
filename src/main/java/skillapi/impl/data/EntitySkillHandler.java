@@ -15,8 +15,8 @@ import skillapi.api.internal.IEntitySkillHandler;
 public class EntitySkillHandler implements IEntitySkillHandler, IExtendedEntityProperties
 {
 	private EntityLivingBase entity;
-	private HashMap<ISkill,Integer> skillLevels;
-	private HashMap<ISkill,Double> skillXPs;
+	private HashMap<ISkill,Integer> skillLevels = new HashMap();
+	private HashMap<ISkill,Double> skillXPs = new HashMap();
 
 	public EntitySkillHandler(EntityLivingBase ent)
 	{
@@ -86,6 +86,8 @@ public class EntitySkillHandler implements IEntitySkillHandler, IExtendedEntityP
 		}
 		if(cXP == 0)
 			skillXPs.remove(skill);
+		else
+			skillXPs.put(skill, cXP);
 		return leveled;
 	}
 

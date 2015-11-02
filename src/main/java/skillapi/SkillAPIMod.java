@@ -29,6 +29,7 @@ public class SkillAPIMod implements IConfigHandlerMod
 	public static ISkillAPI				api;
 	private static SkillEventHandler	eventHandler;
 	public static SkillHandlerFactory	skillHandlerFactory;
+	public static SkillHandlerFactory	skillHandlerFactory = new SkillHandlerFactory();
 
 	public static double				xpMult = 1.0;
 
@@ -60,6 +61,7 @@ public class SkillAPIMod implements IConfigHandlerMod
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		xpMult = mainConfig.getDouble("xp mult", 1.0, "Multiplier applied to all xp gained");
+		MinecraftForge.EVENT_BUS.register(skillHandlerFactory);
 	}
 
 	private void sendAPI(Class c, String methodName)
@@ -84,7 +86,7 @@ public class SkillAPIMod implements IConfigHandlerMod
 			if ("register".equals(key))
 			{
 				String value = message.getStringValue();
-				String[] split = value.split(".");
+				String[] split = value.split("\\.");
 				String methodName = split[split.length - 1];
 				String className = value.replace("." + methodName, "");
 				try

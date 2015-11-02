@@ -2,15 +2,18 @@ package skillapi.impl.data;
 
 import java.util.WeakHashMap;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.common.IExtendedEntityProperties;
+import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import skillapi.api.internal.IEntitySkillHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class SkillHandlerFactory
 {
 	private WeakHashMap<EntityLivingBase,EntitySkillHandler> entMap = new WeakHashMap();
 
-	private static final String epid = "SkillApiEPID";
+	public static final String epid = "SkillApiEPID";
 	public IEntitySkillHandler getSkillHandler(EntityLivingBase ent)
 	{
 		if(ent != null)
@@ -33,5 +36,13 @@ public class SkillHandlerFactory
 			return handler;
 		}
 		return null;
+	}
+
+	@SubscribeEvent
+	public void entityConstruction(EntityConstructing event)
+	{
+		Entity ent = event.entity;
+		if(ent instanceof EntityLivingBase)
+			ent.registerExtendedProperties(epid, new EntitySkillHandler((EntityLivingBase) ent));
 	}
 }
