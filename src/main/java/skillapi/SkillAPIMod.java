@@ -8,9 +8,11 @@ import io.darkcraft.darkcore.mod.interfaces.IConfigHandlerMod;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import net.minecraftforge.common.MinecraftForge;
 import skillapi.api.internal.ISkillAPI;
 import skillapi.impl.SkillAPI;
 import skillapi.impl.SkillEventHandler;
+import skillapi.impl.commands.CommandRegister;
 import skillapi.impl.data.SkillHandlerFactory;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -19,6 +21,7 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = "SkillAPI", name = "Skill API", version = "0.01", dependencies = "required-after:FML; required-after:darkcore@[0.3,];")
 public class SkillAPIMod implements IConfigHandlerMod
@@ -28,7 +31,6 @@ public class SkillAPIMod implements IConfigHandlerMod
 	private static ConfigFile			mainConfig;
 	public static ISkillAPI				api;
 	private static SkillEventHandler	eventHandler;
-	public static SkillHandlerFactory	skillHandlerFactory;
 	public static SkillHandlerFactory	skillHandlerFactory = new SkillHandlerFactory();
 
 	public static double				xpMult = 1.0;
@@ -62,6 +64,12 @@ public class SkillAPIMod implements IConfigHandlerMod
 	{
 		xpMult = mainConfig.getDouble("xp mult", 1.0, "Multiplier applied to all xp gained");
 		MinecraftForge.EVENT_BUS.register(skillHandlerFactory);
+	}
+
+	@EventHandler
+	public void serverStartEvent(FMLServerStartingEvent event)
+	{
+		CommandRegister.registerCommands(event);
 	}
 
 	private void sendAPI(Class c, String methodName)
