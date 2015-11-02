@@ -32,6 +32,7 @@ public class SkillAPIMod implements IConfigHandlerMod
 	public static ISkillAPI				api;
 	private static SkillEventHandler	eventHandler;
 	public static SkillHandlerFactory	skillHandlerFactory = new SkillHandlerFactory();
+	public static boolean				testModInit = true;
 
 	public static double				xpMult = 1.0;
 
