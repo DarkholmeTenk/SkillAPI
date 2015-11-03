@@ -25,6 +25,11 @@ public class SkillListGui extends BaseGui
 	private boolean over = false;
 	List<ISkill> skillList;
 
+	private int boxWidth = 400;
+	private int boxHeight = 300;
+	private int sortSwitch = 0;
+	private boolean showDesc = true;
+
 	public SkillListGui(ISkillHandler skillHandler)
 	{
 		handler = skillHandler;
@@ -38,7 +43,7 @@ public class SkillListGui extends BaseGui
 		bindTexture(r);
 		int mX = width / 2;
 		int mY = height / 2;
-		drawRect(mX - 200,mY - 150, mX + 200,mY + 150, 0,0, 1,1);
+		drawRect(mX - (boxWidth/2),mY - (boxHeight/2), mX + (boxWidth/2),mY + (boxHeight/2), 0,0, 1,1);
 		drawSkills();
 	}
 
@@ -46,12 +51,14 @@ public class SkillListGui extends BaseGui
 	{
 		int mX = width / 2;
 		int mY = height / 2;
-		int x = mX - 175;
-		int y = mY - 125;
+		int offset = 25;
+		int x = (mX - (boxWidth/2)) + offset;
+		int y = (mY - (boxHeight/2)) + offset;
 		FontRenderer fr = fontRendererObj;
 		int i = 0;
-		for(i = scrollPos; (i < skillList.size()) && (y < (mY + 100)); i++)
+		for(i = scrollPos; (i < skillList.size()) && (y < ((mY + (boxHeight/2)) - (2*offset))); i++)
 		{
+			int bY = y;
 			ISkill skill = skillList.get(i);
 			ISkillIcon icon = skill.getIcon(handler);
 
@@ -70,13 +77,16 @@ public class SkillListGui extends BaseGui
 			sideX = fr.drawString(xpStr, sideX, y, 0, false);
 
 			y+=4;
-			List<String> descLines = fr.listFormattedStringToWidth(desc, 300);
-			for(int j = 0; j <descLines.size(); j++)
+			if(showDesc)
 			{
-				String s = descLines.get(j);
-				fr.drawString(s, j==0?x+35: x + 40, y += 10, 0, false);
+				List<String> descLines = fr.listFormattedStringToWidth(desc, (boxWidth * 3) / 4);
+				for(int j = 0; j <descLines.size(); j++)
+				{
+					String s = descLines.get(j);
+					fr.drawString(s, j==0?x+35: x + 40, y += 10, 0, false);
+				}
 			}
-			y += 15;
+			y = Math.max(y+15,bY + 35);
 			GL11.glColor3d(1, 1, 1);
 		}
 		over = i < (skillList.size());
@@ -90,22 +100,43 @@ public class SkillListGui extends BaseGui
 		System.out.println("X:" + x + "	Y: " + y);
 		int mX = width / 2;
 		int mY = height / 2;
-		if((x >= (mX + 184)) && (x <= (mX + 200)))
+		int buttonSize = 16;
+
+		Boolean xB = null;
+		Boolean yB = null;
+		if((x >= ((mX + (boxWidth/2)) - buttonSize)) && (x <= (mX + (boxWidth/2))))
+			xB = true;
+		else if((x <= ((mX - (boxWidth/2)) + buttonSize)) && (x >= (mX - (boxWidth/2))))
+			xB = false;
+		if((y >= ((mY + (boxHeight/2)) - buttonSize)) && (y <= (mY + (boxHeight / 2))))
+			yB = true;
+		else if((y <= ((mY - (boxHeight/2)) + buttonSize)) && (y >= (mY - (boxHeight/2))))
+			yB = false;
+		if((xB == null) || (yB == null)) return;
+		if(xB)
 		{
-			if((y >= (mY + 134)) && (y <= (mY + 150)))
+			if(yB && over)
 			{
-				if(over)
+				scrollPos++;
+				over = false;
+			}
+			else if(!yB && (scrollPos > 0))
+					scrollPos--;
+		}
+		else
+		{
+			if(yB)
+			{
+				sortSwitch = (sortSwitch+1) % 3;
+				switch(sortSwitch)
 				{
-					scrollPos++;
-					over = false;
+					case 0: Collections.sort(skillList, SkillSortContainer.nameSorterAsc); break;
+					case 1: Collections.sort(skillList, SkillSortContainer.nameSorterDesc); break;
+					case 2: Collections.sort(skillList, SkillSortContainer.idSorterAsc); break;
 				}
 			}
-			else if((y <= (mY - 134)) && (y >= (mY - 150)))
-			{
-				if(scrollPos > 0)
-					scrollPos--;
-			}
-
+			else
+				showDesc = !showDesc;
 		}
     }
 }

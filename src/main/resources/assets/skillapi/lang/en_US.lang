@@ -1,0 +1,16 @@
+skillapi.key.category=Skill API
+skillapi.key.open.desc=Open Skill List
+
+skillapi.test.skill.0=Skill 1
+skillapi.test.skill.1=Skill 2
+skillapi.test.skill.2=Skill 3
+skillapi.test.skill.3=AASortTest0
+skillapi.test.skill.4=AASortTest1
+skillapi.test.skill.5=Skill 6
+
+skillapi.test.skill.desc.0=This is a really long test description which is going to be used to check that when the text is longer than the box in which it is contained, everything is still displayed correctly.
+skillapi.test.skill.desc.1=This is a short description
+skillapi.test.skill.desc.2=Test description which is long enough to go onto another few lines, because I want to make sure that when there are too many things to display, the scroll functionality actually works like it should do.
+skillapi.test.skill.desc.3=Description 4 which is also pretty long, because of course it's long because that makes life so much more interesting!
+skillapi.test.skill.desc.4=Lololol
+skillapi.test.skill.desc.5=Deadstuff

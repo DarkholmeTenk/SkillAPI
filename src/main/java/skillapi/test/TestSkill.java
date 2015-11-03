@@ -58,13 +58,13 @@ public class TestSkill implements ISkill
 	@Override
 	public String getName()
 	{
-		return "TestSkillName - " + id;
+		return "skillapi.test.skill."+id;
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return "Test skill description word word word word word word word word word word word word word word word word word word word word";
+		return "skillapi.test.skill.desc."+id;
 	}
 
 	@Override
