@@ -76,12 +76,12 @@ public class TestSkill implements ISkill
 	@Override
 	public SkillVisibility getVisibility()
 	{
-		switch(id % 3)
+		/*switch(id % 3)
 		{
 			case 0: return SkillVisibility.OWNED;
 			case 1: return SkillVisibility.ALWAYS;
 			case 2: return SkillVisibility.NEVER;
-		}
+		}*/
 		return SkillVisibility.ALWAYS;
 	}
 

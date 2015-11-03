@@ -1,11 +1,15 @@
 package skillapi.impl.data;
 
+import io.darkcraft.darkcore.mod.helpers.ServerHelper;
+
 import java.util.WeakHashMap;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import skillapi.api.internal.ISkillHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -42,7 +46,21 @@ public class SkillHandlerFactory
 	public void entityConstruction(EntityConstructing event)
 	{
 		Entity ent = event.entity;
-		if(ent instanceof EntityLivingBase)
-			ent.registerExtendedProperties(epid, new SkillHandler((EntityLivingBase) ent));
+		if((ent instanceof EntityLivingBase) && ServerHelper.isServer())
+		{
+			SkillHandler handler = new SkillHandler((EntityLivingBase) ent);
+			ent.registerExtendedProperties(epid, handler);
+		}
+	}
+
+	@SubscribeEvent
+	public void onEntityJoinWorld(EntityJoinWorldEvent event)
+	{
+		if (event.entity instanceof EntityPlayerMP)
+		{
+			EntityPlayerMP pl = (EntityPlayerMP) (event.entity);
+			SkillHandler handler = (SkillHandler) getSkillHandler(pl);
+			handler.sync();
+		}
 	}
 }

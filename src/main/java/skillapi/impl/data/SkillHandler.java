@@ -1,5 +1,10 @@
 package skillapi.impl.data;
 
+import io.darkcraft.darkcore.mod.DarkcoreMod;
+import io.darkcraft.darkcore.mod.helpers.ServerHelper;
+import io.darkcraft.darkcore.mod.helpers.WorldHelper;
+import io.darkcraft.darkcore.mod.network.DataPacket;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,6 +19,7 @@ import skillapi.SkillAPIMod;
 import skillapi.api.implement.ISkill;
 import skillapi.api.internal.ISkillHandler;
 import skillapi.impl.SkillAPI;
+import skillapi.impl.SkillAPIPacketHandler;
 
 public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 {
@@ -55,6 +61,7 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 	{
 		int oldLevel = getLevel(skill);
 		setLevel(skill, level, skill.getMinimumSkillLevel(this), skill.getMaximumSkillLevel(this));
+		sync();
 		return oldLevel;
 	}
 
@@ -132,6 +139,7 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 			skillXPs.remove(skill);
 		else
 			skillXPs.put(skill, xp);
+		sync();
 		return leveled;
 	}
 
@@ -156,6 +164,8 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 	@Override
 	public void saveNBTData(NBTTagCompound nbt)
 	{
+		if((skillLevels.size() == 0) && (skillXPs.size() == 0))
+			return;
 		NBTTagCompound subTag = new NBTTagCompound();
 		for(ISkill skill : skillLevels.keySet())
 			subTag.setInteger("lvl" + skill.getID(), skillLevels.get(skill));
@@ -189,6 +199,21 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 	{
 		if(entity instanceof EntityLivingBase)
 			this.entity = (EntityLivingBase) entity;
+	}
+
+	public void sync()
+	{
+		if(ServerHelper.isServer())
+		{
+			NBTTagCompound nbt = new NBTTagCompound();
+			saveNBTData(nbt);
+			if(nbt.hasKey(nbtIdent))
+			{
+				nbt.setString("uuid", entity.getUniqueID().toString());
+				DataPacket dp = new DataPacket(nbt, (byte) SkillAPIPacketHandler.discriminator);
+				DarkcoreMod.networkChannel.sendToDimension(dp, WorldHelper.getWorldID(entity));
+			}
+		}
 	}
 
 }

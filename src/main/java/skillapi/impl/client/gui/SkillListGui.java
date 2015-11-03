@@ -22,6 +22,7 @@ public class SkillListGui extends BaseGui
 
 	private ISkillHandler handler;
 	private int scrollPos = 0;
+	private boolean over = false;
 	List<ISkill> skillList;
 
 	public SkillListGui(ISkillHandler skillHandler)
@@ -48,7 +49,8 @@ public class SkillListGui extends BaseGui
 		int x = mX - 175;
 		int y = mY - 125;
 		FontRenderer fr = fontRendererObj;
-		for(int i = 0; i < skillList.size(); i++)
+		int i = 0;
+		for(i = scrollPos; (i < skillList.size()) && (y < (mY + 100)); i++)
 		{
 			ISkill skill = skillList.get(i);
 			ISkillIcon icon = skill.getIcon(handler);
@@ -60,9 +62,12 @@ public class SkillListGui extends BaseGui
 				icon = defaultIcon;
 			bindTexture(icon.getResourceLocation());
 			drawRect(x,y,x+25,y+25, icon.u(),icon.v(), icon.U(),icon.V());
-			int sideX = fr.drawString(name, x+35, y += 3, 0, false);
-			sideX = fr.drawString("Lvl: " + handler.getLevel(skill) + "/"+skill.getMaximumSkillLevel(handler),sideX + 25, y, 0, false);
-			sideX = fr.drawString(String.format("XP: %.0f/%.0f", handler.getXP(skill),handler.getXPForNextLevel(skill)), sideX + 25, y, 0, false);
+			int sideX = Math.max(fr.drawString(name, x+35, y += 3, 0, false)+15,mX-15);
+
+			String lvlStr = "Lvl: " + handler.getLevel(skill) + "/"+skill.getMaximumSkillLevel(handler);
+			String xpStr = String.format("XP: %.0f/%.0f", handler.getXP(skill),handler.getXPForNextLevel(skill));
+			sideX = Math.max(fr.drawString(lvlStr,sideX, y, 0, false)+15,mX + 10);
+			sideX = fr.drawString(xpStr, sideX, y, 0, false);
 
 			y+=4;
 			List<String> descLines = fr.listFormattedStringToWidth(desc, 300);
@@ -74,5 +79,33 @@ public class SkillListGui extends BaseGui
 			y += 15;
 			GL11.glColor3d(1, 1, 1);
 		}
+		over = i < (skillList.size());
 	}
+
+	@Override
+	protected void mouseClicked(int x, int y, int button)
+    {
+		if(button != 0)
+			return;
+		System.out.println("X:" + x + "	Y: " + y);
+		int mX = width / 2;
+		int mY = height / 2;
+		if((x >= (mX + 184)) && (x <= (mX + 200)))
+		{
+			if((y >= (mY + 134)) && (y <= (mY + 150)))
+			{
+				if(over)
+				{
+					scrollPos++;
+					over = false;
+				}
+			}
+			else if((y <= (mY - 134)) && (y >= (mY - 150)))
+			{
+				if(scrollPos > 0)
+					scrollPos--;
+			}
+
+		}
+    }
 }

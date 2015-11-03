@@ -26,7 +26,7 @@ public interface ISkill
 	public String getDescription();
 
 	/**
-	 * @return a ResourceLocation identifying the texture to use for the skill
+	 * @return an ISkillIcon identifying the texture to use for the skill or null to use the default "missing texture" icon
 	 */
 	public ISkillIcon getIcon(ISkillHandler handler);
 
