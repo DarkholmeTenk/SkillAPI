@@ -1,6 +1,5 @@
 package skillapi.api.implement;
 
-import net.minecraft.util.ResourceLocation;
 import skillapi.api.internal.ISkillHandler;
 import skillapi.api.internal.SkillVisibility;
 
@@ -29,7 +28,7 @@ public interface ISkill
 	/**
 	 * @return a ResourceLocation identifying the texture to use for the skill
 	 */
-	public ResourceLocation getIcon();
+	public ISkillIcon getIcon(ISkillHandler handler);
 
 	/**
 	 * @return how visible the skill should be to the user

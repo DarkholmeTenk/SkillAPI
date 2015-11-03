@@ -11,17 +11,18 @@ import java.util.List;
 import net.minecraftforge.common.MinecraftForge;
 import skillapi.api.internal.ISkillAPI;
 import skillapi.impl.SkillAPI;
-import skillapi.impl.SkillEventHandler;
 import skillapi.impl.commands.CommandRegister;
 import skillapi.impl.data.SkillHandlerFactory;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
 @Mod(modid = "SkillAPI", name = "Skill API", version = "0.01", dependencies = "required-after:FML; required-after:darkcore@[0.3,];")
 public class SkillAPIMod implements IConfigHandlerMod
@@ -30,11 +31,12 @@ public class SkillAPIMod implements IConfigHandlerMod
 	public static ConfigHandler			configHandler;
 	private static ConfigFile			mainConfig;
 	public static ISkillAPI				api;
-	private static SkillEventHandler	eventHandler;
-	public static SkillHandlerFactory	skillHandlerFactory = new SkillHandlerFactory();
-	public static boolean				testModInit = true;
+	public static SkillHandlerFactory	skillHandlerFactory	= new SkillHandlerFactory();
+	@SidedProxy(clientSide = "skillapi.impl.client.ClientProxy", serverSide = "skillapi.impl.client.ServerProxy")
+	public static Proxy					proxy;
+	public static boolean				testModInit			= true;
 
-	public static double				xpMult = 1.0;
+	public static double				xpMult				= 1.0;
 
 	{
 		i = this;
@@ -58,6 +60,8 @@ public class SkillAPIMod implements IConfigHandlerMod
 	public void init(FMLInitializationEvent event)
 	{
 		handleAPIStuff();
+		proxy.init(event);
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 	}
 
 	@EventHandler
