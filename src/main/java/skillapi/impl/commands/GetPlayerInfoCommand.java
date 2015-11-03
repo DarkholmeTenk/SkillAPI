@@ -10,7 +10,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import skillapi.SkillAPIMod;
 import skillapi.api.implement.ISkill;
-import skillapi.api.internal.IEntitySkillHandler;
+import skillapi.api.internal.ISkillHandler;
 
 public class GetPlayerInfoCommand extends AbstractCommandNew
 {
@@ -41,13 +41,13 @@ public class GetPlayerInfoCommand extends AbstractCommandNew
 			sendString(sen, "Unknown player");
 			return false;
 		}
-		IEntitySkillHandler handler = SkillAPIMod.api.getSkillHandler(pl);
+		ISkillHandler handler = SkillAPIMod.api.getSkillHandler(pl);
 		Collection<ISkill> skills = SkillAPIMod.api.getSkills();
 		sendString(sen, "Player: " + ServerHelper.getUsername(pl));
 		for(ISkill skill : skills)
 		{
-			int level = handler.getSkillLevel(skill);
-			double xp = handler.getCurrentXP(skill);
+			int level = handler.getLevel(skill);
+			double xp = handler.getXP(skill);
 			double nxp = handler.getXPForNextLevel(skill);
 			sendString(sen, "Skill: " + skill.getName() + " lvl: " + level + " xp: " + String.format("%.0f/%.0f",xp,nxp));
 		}

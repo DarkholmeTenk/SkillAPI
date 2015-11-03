@@ -3,7 +3,7 @@ package skillapi.test;
 import net.minecraft.util.ResourceLocation;
 import skillapi.SkillAPIMod;
 import skillapi.api.implement.ISkill;
-import skillapi.api.internal.IEntitySkillHandler;
+import skillapi.api.internal.ISkillHandler;
 import skillapi.api.internal.ISkillAPI;
 import skillapi.api.internal.SkillVisibility;
 import cpw.mods.fml.common.Mod;
@@ -64,19 +64,19 @@ public class SkillAPITestMod
 		}
 
 		@Override
-		public int getMinimumSkillLevel(IEntitySkillHandler handler)
+		public int getMinimumSkillLevel(ISkillHandler handler)
 		{
 			return 0;
 		}
 
 		@Override
-		public int getMaximumSkillLevel(IEntitySkillHandler handler)
+		public int getMaximumSkillLevel(ISkillHandler handler)
 		{
 			return 999;
 		}
 
 		@Override
-		public double getXPForNextLevel(int currentLevel, IEntitySkillHandler handler)
+		public double getXPForNextLevel(int currentLevel, ISkillHandler handler)
 		{
 			return (currentLevel + 1) * 20;
 		}

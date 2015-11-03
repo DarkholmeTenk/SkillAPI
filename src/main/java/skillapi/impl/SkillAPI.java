@@ -3,17 +3,26 @@ package skillapi.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import net.minecraft.entity.EntityLivingBase;
 import skillapi.SkillAPIMod;
 import skillapi.api.implement.ISkill;
-import skillapi.api.internal.IEntitySkillHandler;
+import skillapi.api.internal.ISkillHandler;
 import skillapi.api.internal.ISkillAPI;
 
 public class SkillAPI implements ISkillAPI
 {
+	public static SkillAPI i;
 	private HashMap<String,ISkill> skillMap = new HashMap<String,ISkill>();
 	public ArrayList<ISkill> skillList = new ArrayList<ISkill>();
+	public HashSet<ISkill> invSet = new HashSet();
+	public HashSet<ISkill> ownSet = new HashSet();
+	public HashSet<ISkill> allSet = new HashSet();
+
+	{
+		i = this;
+	}
 
 	@Override
 	public ISkill registerSkill(ISkill skill)
@@ -23,11 +32,17 @@ public class SkillAPI implements ISkillAPI
 			return skillMap.get(id);
 		skillMap.put(id, skill);
 		skillList.add(skill);
+		switch(skill.getVisibility())
+		{
+			case ALWAYS: allSet.add(skill); break;
+			case OWNED: ownSet.add(skill); break;
+			case NEVER: invSet.add(skill); break;
+		}
 		return skill;
 	}
 
 	@Override
-	public IEntitySkillHandler getSkillHandler(EntityLivingBase ent)
+	public ISkillHandler getSkillHandler(EntityLivingBase ent)
 	{
 		return SkillAPIMod.skillHandlerFactory.getSkillHandler(ent);
 	}

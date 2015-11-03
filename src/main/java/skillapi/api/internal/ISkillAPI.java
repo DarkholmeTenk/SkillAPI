@@ -35,7 +35,7 @@ public interface ISkillAPI
 	 * @param ent the entity to get the skill handler for
 	 * @return a skill handler. Returns null iff ent is null.
 	 */
-	public IEntitySkillHandler getSkillHandler(EntityLivingBase ent);
+	public ISkillHandler getSkillHandler(EntityLivingBase ent);
 
 	/**
 	 * @param id the id of the skill to get

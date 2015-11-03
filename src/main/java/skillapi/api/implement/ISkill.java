@@ -1,7 +1,7 @@
 package skillapi.api.implement;
 
 import net.minecraft.util.ResourceLocation;
-import skillapi.api.internal.IEntitySkillHandler;
+import skillapi.api.internal.ISkillHandler;
 import skillapi.api.internal.SkillVisibility;
 
 /**
@@ -40,18 +40,18 @@ public interface ISkill
 	 * @param handler contains a handler which lets you check other skills owned and respond accordingly
 	 * @return the default/minimum level the skill should have
 	 */
-	public int getMinimumSkillLevel(IEntitySkillHandler handler);
+	public int getMinimumSkillLevel(ISkillHandler handler);
 
 	/**
 	 * @param handler contains a handler which lets you check other skills owned and respond accordingly
 	 * @return the maximum level the skill can reach
 	 */
-	public int getMaximumSkillLevel(IEntitySkillHandler handler);
+	public int getMaximumSkillLevel(ISkillHandler handler);
 
 	/**
 	 * @param currentLevel the level which the entity currently has in this skill
 	 * @param handler the handler representing the entity
 	 * @return the amount of xp needed for the next level
 	 */
-	public double getXPForNextLevel(int currentLevel, IEntitySkillHandler handler);
+	public double getXPForNextLevel(int currentLevel, ISkillHandler handler);
 }

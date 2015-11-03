@@ -1,7 +1,9 @@
 package skillapi.impl.data;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,15 +12,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import skillapi.SkillAPIMod;
 import skillapi.api.implement.ISkill;
-import skillapi.api.internal.IEntitySkillHandler;
+import skillapi.api.internal.ISkillHandler;
+import skillapi.impl.SkillAPI;
 
-public class EntitySkillHandler implements IEntitySkillHandler, IExtendedEntityProperties
+public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 {
 	private EntityLivingBase entity;
 	private HashMap<ISkill,Integer> skillLevels = new HashMap();
 	private HashMap<ISkill,Double> skillXPs = new HashMap();
 
-	public EntitySkillHandler(EntityLivingBase ent)
+	public SkillHandler(EntityLivingBase ent)
 	{
 		entity = ent;
 	}
@@ -30,7 +33,7 @@ public class EntitySkillHandler implements IEntitySkillHandler, IExtendedEntityP
 	}
 
 	@Override
-	public int getSkillLevel(ISkill skill)
+	public int getLevel(ISkill skill)
 	{
 		int level;
 		int max = skill.getMaximumSkillLevel(this);
@@ -47,6 +50,14 @@ public class EntitySkillHandler implements IEntitySkillHandler, IExtendedEntityP
 		return level;
 	}
 
+	@Override
+	public int setLevel(ISkill skill, int level)
+	{
+		int oldLevel = getLevel(skill);
+		setLevel(skill, level, skill.getMinimumSkillLevel(this), skill.getMaximumSkillLevel(this));
+		return oldLevel;
+	}
+
 	private void setLevel(ISkill skill, int level, int min, int max)
 	{
 		if(level < min)
@@ -61,8 +72,7 @@ public class EntitySkillHandler implements IEntitySkillHandler, IExtendedEntityP
 	{
 		if(xp == 0)
 			return false;
-		int level = getSkillLevel(skill);
-		int min = skill.getMinimumSkillLevel(this);
+		int level = getLevel(skill);
 		int max = skill.getMaximumSkillLevel(this);
 		if(level == max)
 		{
@@ -70,29 +80,14 @@ public class EntitySkillHandler implements IEntitySkillHandler, IExtendedEntityP
 			return false;
 		}
 
-		double cXP = getCurrentXP(skill);
+		double cXP = getXP(skill);
 		cXP += (xp * SkillAPIMod.xpMult);
 
-		double xpToLevel = skill.getXPForNextLevel(level, this);
-		boolean leveled = false;
-		while(cXP >= xpToLevel)
-		{
-			leveled = true;
-			min = skill.getMinimumSkillLevel(this);
-			max = skill.getMaximumSkillLevel(this);
-			setLevel(skill, ++level, min, max);
-			cXP -= xpToLevel;
-			xpToLevel = skill.getXPForNextLevel(level, this);
-		}
-		if(cXP == 0)
-			skillXPs.remove(skill);
-		else
-			skillXPs.put(skill, cXP);
-		return leveled;
+		return setXP(skill, level, cXP);
 	}
 
 	@Override
-	public double getCurrentXP(ISkill skill)
+	public double getXP(ISkill skill)
 	{
 		if(skillXPs.containsKey(skill))
 			return skillXPs.get(skill);
@@ -100,9 +95,60 @@ public class EntitySkillHandler implements IEntitySkillHandler, IExtendedEntityP
 	}
 
 	@Override
+	public double setXP(ISkill skill, double xp)
+	{
+		int level = getLevel(skill);
+		double old = skillXPs.containsKey(skill) ? skillXPs.get(skill) : 0;
+		setXP(skill, level, xp);
+		return old;
+	}
+
+	private boolean setXP(ISkill skill, int level, double xp)
+	{
+		int min;
+		int max = skill.getMaximumSkillLevel(this);
+		if(level >= max)
+		{
+			skillXPs.remove(skill);
+			return false;
+		}
+		double xpToLevel = skill.getXPForNextLevel(level, this);
+		boolean leveled = false;
+		while(xp >= xpToLevel)
+		{
+			leveled = true;
+			min = skill.getMinimumSkillLevel(this);
+			max = skill.getMaximumSkillLevel(this);
+			if(level >= max)
+			{
+				skillXPs.remove(skill);
+				return true;
+			}
+			setLevel(skill, ++level, min, max);
+			xp -= xpToLevel;
+			xpToLevel = skill.getXPForNextLevel(level, this);
+		}
+		if(xp == 0)
+			skillXPs.remove(skill);
+		else
+			skillXPs.put(skill, xp);
+		return leveled;
+	}
+
+	@Override
 	public double getXPForNextLevel(ISkill skill)
 	{
-		return skill.getXPForNextLevel(getSkillLevel(skill), this);
+		return skill.getXPForNextLevel(getLevel(skill), this);
+	}
+
+	@Override
+	public List<ISkill> getVisibleSkills()
+	{
+		List<ISkill> skillList = new ArrayList<ISkill>(SkillAPI.i.allSet);
+		for(ISkill skill : SkillAPI.i.ownSet)
+			if(getLevel(skill) > skill.getMinimumSkillLevel(this))
+				skillList.add(skill);
+		return skillList;
 	}
 
 	private static final String nbtIdent = "SkillAPITag";

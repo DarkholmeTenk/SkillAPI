@@ -10,7 +10,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import skillapi.SkillAPIMod;
 import skillapi.api.implement.ISkill;
-import skillapi.api.internal.IEntitySkillHandler;
+import skillapi.api.internal.ISkillHandler;
 
 public class AddXPCommand extends AbstractCommandNew
 {
@@ -49,7 +49,7 @@ public class AddXPCommand extends AbstractCommandNew
 			sendString(sen, "Invalid skill");
 			return false;
 		}
-		IEntitySkillHandler handler = SkillAPIMod.api.getSkillHandler(pl);
+		ISkillHandler handler = SkillAPIMod.api.getSkillHandler(pl);
 		handler.addXP(skill, xp);
 		sendString(sen, xp + " xp added to " + skill.getName() + " for " + ServerHelper.getUsername(pl));
 		return true;
