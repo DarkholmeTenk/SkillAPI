@@ -1,11 +1,7 @@
 package skillapi.test;
 
-import net.minecraft.util.ResourceLocation;
 import skillapi.SkillAPIMod;
-import skillapi.api.implement.ISkill;
-import skillapi.api.internal.ISkillHandler;
 import skillapi.api.internal.ISkillAPI;
-import skillapi.api.internal.SkillVisibility;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInterModComms;
@@ -27,59 +23,8 @@ public class SkillAPITestMod
 		api = apiR;
 		if(SkillAPIMod.testModInit)
 		{
-			api.registerSkill(skill);
+			for(int i = 0; i < 6; i++)
+				api.registerSkill(new TestSkill(i));
 		}
 	}
-
-	private static ISkill skill = new ISkill(){
-
-		@Override
-		public String getID()
-		{
-			return "test";
-		}
-
-		@Override
-		public String getName()
-		{
-			return "TestSkill";
-		}
-
-		@Override
-		public String getDescription()
-		{
-			return "Test skill description";
-		}
-
-		@Override
-		public ResourceLocation getIcon()
-		{
-			return null;
-		}
-
-		@Override
-		public SkillVisibility getVisibility()
-		{
-			return SkillVisibility.ALWAYS;
-		}
-
-		@Override
-		public int getMinimumSkillLevel(ISkillHandler handler)
-		{
-			return 0;
-		}
-
-		@Override
-		public int getMaximumSkillLevel(ISkillHandler handler)
-		{
-			return 999;
-		}
-
-		@Override
-		public double getXPForNextLevel(int currentLevel, ISkillHandler handler)
-		{
-			return (currentLevel + 1) * 20;
-		}
-
-	};
 }
