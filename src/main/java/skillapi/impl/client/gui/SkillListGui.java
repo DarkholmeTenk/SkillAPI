@@ -68,8 +68,9 @@ public class SkillListGui extends BaseGui
 			if((icon == null) || (icon.getResourceLocation() == null))
 				icon = defaultIcon;
 			bindTexture(icon.getResourceLocation());
-			drawRect(x,y,x+25,y+25, icon.u(),icon.v(), icon.U(),icon.V());
-			int sideX = Math.max(fr.drawString(name, x+35, y += 3, 0, false)+15,mX-15);
+			int iconSize = showDesc ? 25 : 16;
+			drawRect(x,y,x+iconSize,y+iconSize, icon.u(),icon.v(), icon.U(),icon.V());
+			int sideX = Math.max(fr.drawString(name, x+iconSize+10, y += showDesc ? 3 : 4, 0, false)+15,mX-15);
 
 			String lvlStr = "Lvl: " + handler.getLevel(skill) + "/"+skill.getMaximumSkillLevel(handler);
 			String xpStr = String.format("XP: %.0f/%.0f", handler.getXP(skill),handler.getXPForNextLevel(skill));
@@ -86,7 +87,7 @@ public class SkillListGui extends BaseGui
 					fr.drawString(s, j==0?x+35: x + 40, y += 10, 0, false);
 				}
 			}
-			y = Math.max(y+15,bY + 35);
+			y = Math.max(y+15,bY + (showDesc ? 37 : 15));
 			GL11.glColor3d(1, 1, 1);
 		}
 		over = i < (skillList.size());
