@@ -10,7 +10,7 @@ public class BaseCommand extends AbstractCommandNew
 {
 	public BaseCommand()
 	{
-		super(new AddXPCommand(), new GetPlayerInfoCommand());
+		super(new AddXPCommand(), new SetLevelCommand(), new GetPlayerInfoCommand());
 	}
 
 	@Override

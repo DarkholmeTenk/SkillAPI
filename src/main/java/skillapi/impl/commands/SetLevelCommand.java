@@ -10,29 +10,28 @@ import net.minecraft.entity.player.EntityPlayer;
 import skillapi.api.implement.ISkill;
 import skillapi.api.internal.ISkillHandler;
 
-public class AddXPCommand extends PlayerSkillNumberCommand
+public class SetLevelCommand extends PlayerSkillNumberCommand
 {
 
 	@Override
 	public String getCommandName()
 	{
-		return "addxp";
+		return "setlevel";
 	}
 
 	@Override
 	public void getAliases(List<String> list)
 	{
+		list.add("sl");
 	}
 
 	@Override
-	public boolean process(ICommandSender sen, ISkillHandler handler, ISkill skill, int num)
+	public boolean process(ICommandSender sen, ISkillHandler pl, ISkill skill, int num)
 	{
-		Entity ent = handler.getEntity();
+		Entity ent = pl.getEntity();
+		pl.setLevel(skill, num);
 		if(ent instanceof EntityPlayer)
-		{
-			handler.addXP(skill, num);
-			sendString(sen, num + " xp added to " + skill.getName() + " for " + ServerHelper.getUsername((EntityPlayer) ent));
-		}
+			sendString(sen, "Level of " + skill.getName() + " set to " + num + " for " + ServerHelper.getUsername((EntityPlayer) ent));
 		return true;
 	}
 

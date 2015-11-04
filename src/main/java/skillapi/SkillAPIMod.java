@@ -55,6 +55,13 @@ public class SkillAPIMod implements IConfigHandlerMod
 	{
 		configHandler = ConfigHandlerFactory.getConfigHandler(this);
 		mainConfig = configHandler.registerConfigNeeder("Main");
+		refreshConfigs();
+	}
+
+	public static void refreshConfigs()
+	{
+		xpMult = mainConfig.getDouble("xp multiplier", 1.0, "Allows you to increase or decrease the rate of xp gain for all skills");
+		testModInit = mainConfig.getBoolean("test skills", false, "If true, 6 test skills will be added to the game");
 	}
 
 	@EventHandler
@@ -69,7 +76,6 @@ public class SkillAPIMod implements IConfigHandlerMod
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		xpMult = mainConfig.getDouble("xp mult", 1.0, "Multiplier applied to all xp gained");
 		MinecraftForge.EVENT_BUS.register(skillHandlerFactory);
 	}
 
