@@ -24,25 +24,25 @@ public class TestSkill implements ISkill
 				}
 
 				@Override
-				public int u()
+				public double u()
 				{
 					return 0;
 				}
 
 				@Override
-				public int U()
+				public double U()
 				{
 					return 1;
 				}
 
 				@Override
-				public int v()
+				public double v()
 				{
 					return 0;
 				}
 
 				@Override
-				public int V()
+				public double V()
 				{
 					return 1;
 				}

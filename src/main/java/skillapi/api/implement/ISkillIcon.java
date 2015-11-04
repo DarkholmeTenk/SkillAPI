@@ -11,8 +11,8 @@ public interface ISkillIcon
 {
 	public ResourceLocation getResourceLocation();
 
-	public int u();
-	public int U();
-	public int v();
-	public int V();
+	public double u();
+	public double U();
+	public double v();
+	public double V();
 }

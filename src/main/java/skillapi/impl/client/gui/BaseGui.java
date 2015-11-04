@@ -10,7 +10,7 @@ public class BaseGui extends GuiScreen
 	/**
      * Draws a textured rectangle at the stored z-value. Args: x, y, u, v, width, height
      */
-    public void drawRect(int x, int y, int X, int Y, int u, int v, int U, int V)
+    public void drawRect(int x, int y, int X, int Y, double u, double v, double U, double V)
     {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
