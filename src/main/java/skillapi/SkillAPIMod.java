@@ -33,7 +33,7 @@ public class SkillAPIMod implements IConfigHandlerMod
 	private static ConfigFile			mainConfig;
 	public static ISkillAPI				api;
 	public static SkillHandlerFactory	skillHandlerFactory	= new SkillHandlerFactory();
-	@SidedProxy(clientSide = "skillapi.impl.client.ClientProxy", serverSide = "skillapi.impl.client.ServerProxy")
+	@SidedProxy(clientSide = "skillapi.impl.client.ClientProxy", serverSide = "skillapi.impl.server.ServerProxy")
 	public static Proxy					proxy;
 	public static boolean				testModInit			= true;
 
