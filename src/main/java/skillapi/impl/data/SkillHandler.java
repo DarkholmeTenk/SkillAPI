@@ -1,6 +1,8 @@
 package skillapi.impl.data;
 
 import io.darkcraft.darkcore.mod.DarkcoreMod;
+import io.darkcraft.darkcore.mod.datastore.UVStore;
+import io.darkcraft.darkcore.mod.helpers.MessageHelper;
 import io.darkcraft.darkcore.mod.helpers.ServerHelper;
 import io.darkcraft.darkcore.mod.helpers.WorldHelper;
 import io.darkcraft.darkcore.mod.network.DataPacket;
@@ -12,11 +14,13 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import skillapi.SkillAPIMod;
 import skillapi.api.implement.ISkill;
+import skillapi.api.implement.ISkillIcon;
 import skillapi.api.internal.ISkillHandler;
 import skillapi.impl.SkillAPI;
 import skillapi.impl.SkillAPIPacketHandler;
@@ -134,6 +138,12 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 			setLevel(skill, ++level, min, max);
 			xp -= xpToLevel;
 			xpToLevel = skill.getXPForNextLevel(level, this);
+		}
+		if(leveled && ServerHelper.isServer() && (entity instanceof EntityPlayerMP))
+		{
+			ISkillIcon icon = skill.getIcon(this);
+			UVStore uv = icon.getUV();
+			MessageHelper.sendMessage((EntityPlayerMP)entity, icon.getResourceLocation(), uv, skill.getName() + " levelled up to " + getLevel(skill), MessageHelper.defaultSeconds);
 		}
 		if(xp == 0)
 			skillXPs.remove(skill);

@@ -1,5 +1,7 @@
 package skillapi.impl.client.gui;
 
+import io.darkcraft.darkcore.mod.datastore.UVStore;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -69,7 +71,8 @@ public class SkillListGui extends BaseGui
 				icon = defaultIcon;
 			bindTexture(icon.getResourceLocation());
 			int iconSize = showDesc ? 25 : 16;
-			drawRect(x,y,x+iconSize,y+iconSize, icon.u(),icon.v(), icon.U(),icon.V());
+			UVStore uv = icon.getUV();
+			drawRect(x,y,x+iconSize,y+iconSize, uv.u, uv.v, uv.U, uv.V);
 			int sideX = Math.max(fr.drawString(name, x+iconSize+10, y += showDesc ? 3 : 4, 0, false)+15,mX-15);
 
 			String lvlStr = "Lvl: " + handler.getLevel(skill) + "/"+skill.getMaximumSkillLevel(handler);

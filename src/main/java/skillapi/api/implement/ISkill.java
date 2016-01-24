@@ -1,5 +1,7 @@
 package skillapi.api.implement;
 
+import java.util.List;
+
 import skillapi.api.internal.ISkillHandler;
 import skillapi.api.internal.SkillVisibility;
 
@@ -53,4 +55,11 @@ public interface ISkill
 	 * @return the amount of xp needed for the next level
 	 */
 	public double getXPForNextLevel(int currentLevel, ISkillHandler handler);
+
+	/**
+	 * Used to display mouseover hints on how to level up this skill
+	 * Each item in the list will be treated as a new hint and one will be picked at random
+	 * @return a list of hints. Empty or null will prevent info popup.
+	 */
+	public List<String> getLevelingHints();
 }

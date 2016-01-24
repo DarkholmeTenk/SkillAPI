@@ -1,5 +1,6 @@
 package skillapi.api.implement;
 
+import io.darkcraft.darkcore.mod.datastore.UVStore;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -11,8 +12,5 @@ public interface ISkillIcon
 {
 	public ResourceLocation getResourceLocation();
 
-	public double u();
-	public double U();
-	public double v();
-	public double V();
+	public UVStore getUV();
 }

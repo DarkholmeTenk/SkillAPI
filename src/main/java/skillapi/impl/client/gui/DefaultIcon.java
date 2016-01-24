@@ -1,5 +1,6 @@
 package skillapi.impl.client.gui;
 
+import io.darkcraft.darkcore.mod.datastore.UVStore;
 import net.minecraft.util.ResourceLocation;
 import skillapi.api.implement.ISkillIcon;
 
@@ -14,27 +15,9 @@ public class DefaultIcon implements ISkillIcon
 	}
 
 	@Override
-	public double u()
+	public UVStore getUV()
 	{
-		return 0;
-	}
-
-	@Override
-	public double U()
-	{
-		return 1;
-	}
-
-	@Override
-	public double v()
-	{
-		return 0;
-	}
-
-	@Override
-	public double V()
-	{
-		return 1;
+		return UVStore.defaultUV;
 	}
 
 }

@@ -1,5 +1,9 @@
 package skillapi.test;
 
+import io.darkcraft.darkcore.mod.datastore.UVStore;
+
+import java.util.List;
+
 import net.minecraft.util.ResourceLocation;
 import skillapi.api.implement.ISkill;
 import skillapi.api.implement.ISkillIcon;
@@ -24,27 +28,9 @@ public class TestSkill implements ISkill
 				}
 
 				@Override
-				public double u()
+				public UVStore getUV()
 				{
-					return 0;
-				}
-
-				@Override
-				public double U()
-				{
-					return 1;
-				}
-
-				@Override
-				public double v()
-				{
-					return 0;
-				}
-
-				@Override
-				public double V()
-				{
-					return 1;
+					return UVStore.defaultUV;
 				}
 			};
 	}
@@ -101,6 +87,12 @@ public class TestSkill implements ISkill
 	public double getXPForNextLevel(int currentLevel, ISkillHandler handler)
 	{
 		return (currentLevel + 1) * 20;
+	}
+
+	@Override
+	public List<String> getLevelingHints()
+	{
+		return null;
 	}
 
 }
