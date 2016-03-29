@@ -18,10 +18,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
+import net.minecraftforge.common.MinecraftForge;
 import skillapi.SkillAPIMod;
 import skillapi.api.implement.ISkill;
 import skillapi.api.implement.ISkillIcon;
 import skillapi.api.internal.ISkillHandler;
+import skillapi.api.internal.events.EntitySkillChangeEvent;
 import skillapi.impl.SkillAPI;
 import skillapi.impl.SkillAPIPacketHandler;
 
@@ -64,18 +66,21 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 	public int setLevel(ISkill skill, int level)
 	{
 		int oldLevel = getLevel(skill);
-		setLevel(skill, level, skill.getMinimumSkillLevel(this), skill.getMaximumSkillLevel(this));
+		if(oldLevel == level) return oldLevel;
+		int nl = setLevel(skill, level, skill.getMinimumSkillLevel(this), skill.getMaximumSkillLevel(this));
+		MinecraftForge.EVENT_BUS.post(new EntitySkillChangeEvent(getEntity(), skill, oldLevel, nl));
 		sync();
 		return oldLevel;
 	}
 
-	private void setLevel(ISkill skill, int level, int min, int max)
+	private int setLevel(ISkill skill, int level, int min, int max)
 	{
 		if(level < min)
 			level = min;
 		if(level  > max)
 			level = max;
 		skillLevels.put(skill, level);
+		return level;
 	}
 
 	@Override
