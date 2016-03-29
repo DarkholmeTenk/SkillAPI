@@ -63,6 +63,13 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 	}
 
 	@Override
+	public double getLevelPercent(ISkill skill)
+	{
+		if(skill.getMaximumSkillLevel(this) == skill.getMinimumSkillLevel(this)) return 1;
+		return (getLevel(skill) - skill.getMinimumSkillLevel(this))/(double)(skill.getMaximumSkillLevel(this)-skill.getMinimumSkillLevel(this));
+	}
+
+	@Override
 	public int setLevel(ISkill skill, int level)
 	{
 		int oldLevel = getLevel(skill);

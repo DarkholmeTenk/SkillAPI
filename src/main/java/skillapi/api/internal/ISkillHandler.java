@@ -27,6 +27,13 @@ public interface ISkillHandler
 	public int getLevel(ISkill skill);
 
 	/**
+	 * Use to get a value between 0 and 1 representing how advanced the skill is.
+	 * @param skill the skill to get the progress of
+	 * @return a value between 0 (no skill progress) and 1 (max level)
+	 */
+	public double getLevelPercent(ISkill skill);
+
+	/**
 	 * Sets the level of a skill that the entity has.
 	 * Will be constrained between the skills minimum and maximum.
 	 * @param skill the skill to change the level of.
