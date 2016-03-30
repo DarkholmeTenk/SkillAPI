@@ -11,7 +11,6 @@ import java.util.List;
 import net.minecraftforge.common.MinecraftForge;
 import skillapi.api.internal.ISkillAPI;
 import skillapi.impl.SkillAPI;
-import skillapi.impl.SkillAPIPacketHandler;
 import skillapi.impl.commands.CommandRegister;
 import skillapi.impl.data.SkillHandlerFactory;
 import cpw.mods.fml.common.Mod;
@@ -70,7 +69,6 @@ public class SkillAPIMod implements IConfigHandlerMod
 		handleAPIStuff();
 		proxy.init(event);
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-		SkillAPIPacketHandler.register();
 	}
 
 	@EventHandler
