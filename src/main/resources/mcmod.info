@@ -5,6 +5,8 @@
     "name": "Skill API",
     "description": "A mod which provides an interface for other mods to add skills to minecraft",
     "url": "http://github.com/DarkholmeTenk/SkillAPI",
+    "version": "${version}",
+	"mcversion": "${mcversion}",
     "updateUrl": "",
     "authorList": [ "DarkholmeTenk" ],
     "credits": "Created by DarkholmeTenk",
