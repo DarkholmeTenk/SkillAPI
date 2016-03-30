@@ -1,11 +1,9 @@
 package skillapi.impl.data;
 
-import io.darkcraft.darkcore.mod.DarkcoreMod;
+import io.darkcraft.darkcore.mod.abstracts.AbstractEntityDataStore;
 import io.darkcraft.darkcore.mod.datastore.UVStore;
 import io.darkcraft.darkcore.mod.helpers.MessageHelper;
 import io.darkcraft.darkcore.mod.helpers.ServerHelper;
-import io.darkcraft.darkcore.mod.helpers.WorldHelper;
-import io.darkcraft.darkcore.mod.network.DataPacket;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +15,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.MinecraftForge;
 import skillapi.SkillAPIMod;
 import skillapi.api.implement.ISkill;
@@ -25,23 +22,16 @@ import skillapi.api.implement.ISkillIcon;
 import skillapi.api.internal.ISkillHandler;
 import skillapi.api.internal.events.EntitySkillChangeEvent;
 import skillapi.impl.SkillAPI;
-import skillapi.impl.SkillAPIPacketHandler;
 
-public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
+public class SkillHandler extends AbstractEntityDataStore implements ISkillHandler
 {
-	private EntityLivingBase entity;
+	public static final String disc = "sapi.skills";
 	private HashMap<ISkill,Integer> skillLevels = new HashMap();
 	private HashMap<ISkill,Double> skillXPs = new HashMap();
 
 	public SkillHandler(EntityLivingBase ent)
 	{
-		entity = ent;
-	}
-
-	@Override
-	public EntityLivingBase getEntity()
-	{
-		return entity;
+		super(ent, disc);
 	}
 
 	@Override
@@ -76,7 +66,7 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 		if(oldLevel == level) return oldLevel;
 		int nl = setLevel(skill, level, skill.getMinimumSkillLevel(this), skill.getMaximumSkillLevel(this));
 		MinecraftForge.EVENT_BUS.post(new EntitySkillChangeEvent(getEntity(), skill, oldLevel, nl));
-		sync();
+		sendUpdate();
 		return oldLevel;
 	}
 
@@ -128,6 +118,7 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 
 	private boolean setXP(ISkill skill, int level, double xp)
 	{
+		EntityLivingBase ent = getEntity();
 		int min;
 		int max = skill.getMaximumSkillLevel(this);
 		if(level >= max)
@@ -151,17 +142,17 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 			xp -= xpToLevel;
 			xpToLevel = skill.getXPForNextLevel(level, this);
 		}
-		if(leveled && ServerHelper.isServer() && (entity instanceof EntityPlayerMP))
+		if(leveled && ServerHelper.isServer() && (ent instanceof EntityPlayerMP))
 		{
 			ISkillIcon icon = skill.getIcon(this);
 			UVStore uv = icon.getUV();
-			MessageHelper.sendMessage((EntityPlayerMP)entity, icon.getResourceLocation(), uv, skill.getName() + " levelled up to " + getLevel(skill), MessageHelper.defaultSeconds);
+			MessageHelper.sendMessage((EntityPlayerMP)ent, icon.getResourceLocation(), uv, skill.getName() + " levelled up to " + getLevel(skill), MessageHelper.defaultSeconds);
 		}
 		if(xp == 0)
 			skillXPs.remove(skill);
 		else
 			skillXPs.put(skill, xp);
-		sync();
+		sendUpdate();
 		return leveled;
 	}
 
@@ -181,10 +172,14 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 		return skillList;
 	}
 
-	private static final String nbtIdent = "SkillAPITag";
+	@Override
+	public void writeToNBT(NBTTagCompound nbt){}
 
 	@Override
-	public void saveNBTData(NBTTagCompound nbt)
+	public void readFromNBT(NBTTagCompound nbt){}
+
+	@Override
+	public void writeTransmittable(NBTTagCompound nbt)
 	{
 		if((skillLevels.size() == 0) && (skillXPs.size() == 0))
 			return;
@@ -193,15 +188,15 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 			subTag.setInteger("lvl" + skill.getID(), skillLevels.get(skill));
 		for(ISkill skill : skillXPs.keySet())
 			subTag.setDouble("xp" + skill.getID(), skillXPs.get(skill));
-		nbt.setTag(nbtIdent, subTag);
+		nbt.setTag(disc, subTag);
 	}
 
 	@Override
-	public void loadNBTData(NBTTagCompound nbt)
+	public void readTransmittable(NBTTagCompound nbt)
 	{
-		if(nbt.hasKey(nbtIdent))
+		if(nbt.hasKey(disc))
 		{
-			NBTTagCompound subTag = nbt.getCompoundTag(nbtIdent);
+			NBTTagCompound subTag = nbt.getCompoundTag(disc);
 			skillLevels.clear();
 			skillXPs.clear();
 			Collection<ISkill> skills = SkillAPIMod.api.getSkills();
@@ -217,25 +212,11 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 	}
 
 	@Override
-	public void init(Entity entity, World world)
+	public boolean notifyArea()
 	{
-		if(entity instanceof EntityLivingBase)
-			this.entity = (EntityLivingBase) entity;
+		return false;
 	}
 
-	public void sync()
-	{
-		if(ServerHelper.isServer())
-		{
-			NBTTagCompound nbt = new NBTTagCompound();
-			saveNBTData(nbt);
-			if(nbt.hasKey(nbtIdent))
-			{
-				nbt.setString("uuid", entity.getUniqueID().toString());
-				DataPacket dp = new DataPacket(nbt, SkillAPIPacketHandler.discriminator);
-				DarkcoreMod.networkChannel.sendToDimension(dp, WorldHelper.getWorldID(entity));
-			}
-		}
-	}
-
+	@Override
+	public void init(Entity entity, World world){}
 }
