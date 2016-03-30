@@ -14,7 +14,7 @@ import skillapi.impl.data.SkillHandler;
 
 public class SkillAPIPacketHandler implements IDataPacketHandler
 {
-	public static final int discriminator = 40;
+	public static final String discriminator = "sapi.data";
 	public static void register()
 	{
 		DarkcoreMod.packetHandler.registerHandler(discriminator, new SkillAPIPacketHandler());

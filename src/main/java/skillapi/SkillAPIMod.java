@@ -25,7 +25,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = "SkillAPI", name = "Skill API", version = "0.01", dependencies = "required-after:FML; required-after:darkcore@[0.3,];")
+@Mod(modid = "SkillAPI", name = "Skill API", version = "0.02", dependencies = "required-after:FML; required-after:darkcore@[0.4];")
 public class SkillAPIMod implements IConfigHandlerMod
 {
 	public static SkillAPIMod			i;

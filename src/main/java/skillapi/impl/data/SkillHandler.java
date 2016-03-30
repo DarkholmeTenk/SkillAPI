@@ -232,7 +232,7 @@ public class SkillHandler implements ISkillHandler, IExtendedEntityProperties
 			if(nbt.hasKey(nbtIdent))
 			{
 				nbt.setString("uuid", entity.getUniqueID().toString());
-				DataPacket dp = new DataPacket(nbt, (byte) SkillAPIPacketHandler.discriminator);
+				DataPacket dp = new DataPacket(nbt, SkillAPIPacketHandler.discriminator);
 				DarkcoreMod.networkChannel.sendToDimension(dp, WorldHelper.getWorldID(entity));
 			}
 		}
