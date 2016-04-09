@@ -25,8 +25,8 @@ public abstract class PlayerSkillNumberCommand extends AbstractCommandNew
 		}
 		if(sen instanceof EntityPlayer)
 			pl = (EntityPlayer) sen;
-		else if(strList.size() == 3)
-				pl = ServerHelper.getPlayer(strList.get(0));
+		if(strList.size() == 3)
+			pl = ServerHelper.getPlayer(strList.get(0));
 		if(pl == null)
 		{
 			sendString(sen,"Invalid player");
