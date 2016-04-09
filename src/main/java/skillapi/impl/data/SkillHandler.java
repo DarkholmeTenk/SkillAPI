@@ -128,7 +128,7 @@ public class SkillHandler extends AbstractEntityDataStore implements ISkillHandl
 		}
 		double xpToLevel = skill.getXPForNextLevel(level, this);
 		boolean leveled = false;
-		int ol = leve;;
+		int ol = level;
 		while(xp >= xpToLevel)
 		{
 			leveled = true;
