@@ -128,6 +128,7 @@ public class SkillHandler extends AbstractEntityDataStore implements ISkillHandl
 		}
 		double xpToLevel = skill.getXPForNextLevel(level, this);
 		boolean leveled = false;
+		int ol = leve;;
 		while(xp >= xpToLevel)
 		{
 			leveled = true;
@@ -146,6 +147,7 @@ public class SkillHandler extends AbstractEntityDataStore implements ISkillHandl
 		{
 			ISkillIcon icon = skill.getIcon(this);
 			UVStore uv = icon.getUV();
+			MinecraftForge.EVENT_BUS.post(new EntitySkillChangeEvent(getEntity(), skill, ol, level));
 			MessageHelper.sendMessage((EntityPlayerMP)ent, icon.getResourceLocation(), uv, skill.getName() + " levelled up to " + getLevel(skill), MessageHelper.defaultSeconds);
 		}
 		if(xp == 0)
