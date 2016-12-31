@@ -1,10 +1,5 @@
 package skillapi.impl.data;
 
-import io.darkcraft.darkcore.mod.abstracts.AbstractEntityDataStore;
-import io.darkcraft.darkcore.mod.datastore.UVStore;
-import io.darkcraft.darkcore.mod.helpers.MessageHelper;
-import io.darkcraft.darkcore.mod.helpers.ServerHelper;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,6 +11,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+
+import io.darkcraft.darkcore.mod.abstracts.AbstractEntityDataStore;
+import io.darkcraft.darkcore.mod.datastore.UVStore;
+import io.darkcraft.darkcore.mod.helpers.MessageHelper;
+import io.darkcraft.darkcore.mod.helpers.ServerHelper;
+
 import skillapi.SkillAPIMod;
 import skillapi.api.implement.ISkill;
 import skillapi.api.implement.ISkillIcon;
@@ -23,13 +24,13 @@ import skillapi.api.internal.ISkillHandler;
 import skillapi.api.internal.events.EntitySkillChangeEvent;
 import skillapi.impl.SkillAPI;
 
-public class SkillHandler extends AbstractEntityDataStore implements ISkillHandler
+public class SkillHandler<E extends EntityLivingBase> extends AbstractEntityDataStore<E> implements ISkillHandler
 {
 	public static final String disc = "sapi.skills";
 	private HashMap<ISkill,Integer> skillLevels = new HashMap();
 	private HashMap<ISkill,Double> skillXPs = new HashMap();
 
-	public SkillHandler(EntityLivingBase ent)
+	public SkillHandler(E ent)
 	{
 		super(ent, disc);
 	}
